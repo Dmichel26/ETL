@@ -90,10 +90,10 @@ CMD ["bash", "-c", "echo 'Datos de temperatura convertidos:' && python -c \"impo
         f.write(dockerfile_content)
 
     print("\n Dockerfile generado:")
-    !cat Dockerfile
+    cat Dockerfile
 
     # Crear paquete completo
-    !tar -czf temperatura_package.tar.gz {csv_file} {req_file} Dockerfile
+    tar -czf temperatura_package.tar.gz {csv_file} {req_file} Dockerfile
     return "temperatura_package.tar.gz"
 
 # Ejecución principal
