@@ -66,7 +66,7 @@ def generate_requirements():
     with open('requirements.txt', 'w') as f:
         subprocess.run(['pip', 'freeze'], stdout=f)
     print(" requirements.txt generado:")
-    !cat requirements.txt
+    cat requirements.txt
     return "requirements.txt"
 
 def generate_dockerfile(csv_file, req_file):
