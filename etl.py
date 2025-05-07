@@ -7,41 +7,34 @@ Original file is located at
     https://colab.research.google.com/drive/1UAwr81XWUDyF7-Vex_EAq1tiFOwnaK-s
 """
 
+import pandas as pd
+
+def celsius_to_fahrenheit(celsius):
+    """Convierte temperatura de Celsius a Fahrenheit"""
+    return (celsius * 9/5) + 32
+
 def transform_data(url):
-    print(" Descargando datos desde la URL...")
+    print("Descargando datos desde la URL...")
     try:
         df = pd.read_csv(url, encoding='utf-8', delimiter=';')
     except Exception as e:
-        print(f" Error al leer el archivo: {e}")
+        print(f"Error al leer el archivo: {e}")
         return None
 
-    print(" Datos descargados correctamente.")
-
-    # Mostrar todas las columnas y filas al imprimir el DataFrame
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.max_rows', None)
-
-    print("\n Vista previa de los datos originales:")
-    print(df)
-
+    print("Datos descargados correctamente.")
+    
     # Transformación
-    print("\n Transformando datos...")
     columns_to_convert = ['T.Maxima', 'T.Minima']
-
     for col in columns_to_convert:
         if col in df.columns:
-            try:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-                df[f"{col}_Fahrenheit"] = df[col].apply(celsius_to_fahrenheit)
-                print(f" Convertida {col} a {col}_Fahrenheit")
-            except Exception as e:
-                print(f" Error al convertir {col}: {e}")
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+            df[f"{col}_Fahrenheit"] = df[col].apply(celsius_to_fahrenheit)
         else:
-            print(f" Columna {col} no encontrada")
+            print(f"Columna {col} no encontrada")
 
-    print("\n Datos transformados:")
-    print(df)
+    print("\nTabla transformada:")
+    return df
 
-    output_file = "temperaturas_transformadas.csv"
-    df.to_csv(output_file, index=False, sep=',', encoding='utf-8')
-    return output_file
+# Ejecutar
+url = "https://datos.gob.cl/dataset/d1ab099f-c6ff-4d71-b956-0d1f674a42ac/resource/a047c361-1ee3-46bc-80b2-469c819f7266/download/temperatura_072020.csv"
+df_transformado = transform_data(url)
