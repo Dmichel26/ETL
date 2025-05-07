@@ -11,20 +11,9 @@ import pandas as pd
 import numpy as np
 import requests
 from io import StringIO
-
-from typing_extensions import dataclass_transform
-#Extraer desde una url
-url = 'https://datos.gob.cl/dataset/d1ab099f-c6ff-4d71-b956-0d1f674a42ac/resource/a047c361-1ee3-46bc-80b2-469c819f7266/download/temperatura_072020.csv'
-response=requests.get(url)
-data= StringIO(response.text)
-df=pd.read_csv(data)
-
-#Los primeros datos
-df.head()
-
-import pandas as pd
-from google.colab import files
 import subprocess
+import tarfile
+from google.colab import files
 
 def celsius_to_fahrenheit(celsius):
     """Convierte temperatura de Celsius a Fahrenheit"""
@@ -66,7 +55,8 @@ def generate_requirements():
     with open('requirements.txt', 'w') as f:
         subprocess.run(['pip', 'freeze'], stdout=f)
     print(" requirements.txt generado:")
-    cat requirements.txt
+    with open('requirements.txt', 'r') as f:
+        print(f.read())
     return "requirements.txt"
 
 def generate_dockerfile(csv_file, req_file):
@@ -83,18 +73,24 @@ RUN pip install -r {req_file}
 COPY {csv_file} /data/temperaturas_transformadas.csv
 
 # Comando para verificar los datos
-CMD ["bash", "-c", "echo 'Datos de temperatura convertidos:' && python -c \"import pandas as pd; df = pd.read_csv('/data/temperaturas_transformadas.csv'); print(df.head())\""]
+CMD ["bash", "-c", "echo 'Datos de temperatura convertidos:' && python -c \\"import pandas as pd; df = pd.read_csv('/data/temperaturas_transformadas.csv'); print(df.head())\\""]
 '''
 
     with open('Dockerfile', 'w') as f:
         f.write(dockerfile_content)
 
     print("\n Dockerfile generado:")
-    cat Dockerfile
+    with open('Dockerfile', 'r') as f:
+        print(f.read())
 
-    # Crear paquete completo
-    tar -czf temperatura_package.tar.gz {csv_file} {req_file} Dockerfile
-    return "temperatura_package.tar.gz"
+    # Crear paquete comprimido
+    package_name = "temperatura_package.tar.gz"
+    with tarfile.open(package_name, "w:gz") as tar:
+        tar.add(csv_file)
+        tar.add(req_file)
+        tar.add("Dockerfile")
+
+    return package_name
 
 # Ejecución principal
 if __name__ == "__main__":
