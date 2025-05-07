@@ -38,3 +38,5 @@ def transform_data(url):
 # Ejecutar
 url = "https://datos.gob.cl/dataset/d1ab099f-c6ff-4d71-b956-0d1f674a42ac/resource/a047c361-1ee3-46bc-80b2-469c819f7266/download/temperatura_072020.csv"
 df_transformado = transform_data(url)
+if df_transformado is not None:
+    display(df_transformado.head())
