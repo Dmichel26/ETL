@@ -13,7 +13,13 @@ import requests
 from io import StringIO
 import subprocess
 import tarfile
-from google.colab import files
+
+# Detectar si se está en Google Colab
+try:
+    from google.colab import files
+    colab = True
+except ImportError:
+    colab = False
 
 def celsius_to_fahrenheit(celsius):
     """Convierte temperatura de Celsius a Fahrenheit"""
@@ -105,8 +111,13 @@ if __name__ == "__main__":
 
         # Descargar resultados
         print("\n Descargando paquete completo...")
-        files.download(package_file)
+        if colab:
+            files.download(package_file)
+        else:
+            print(f" Archivo listo para ser descargado manualmente: {package_file}")
+
         print("\n ¡Proceso completado! Paquete con:")
         print("- CSV transformado")
         print("- requirements.txt")
         print("- Dockerfile")
+
