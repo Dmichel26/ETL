@@ -7,24 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1UAwr81XWUDyF7-Vex_EAq1tiFOwnaK-s
 """
 
-import pandas as pd
-import numpy as np
-import requests
-from io import StringIO
-import subprocess
-import tarfile
-
-# Detectar si se está en Google Colab
-try:
-    from google.colab import files
-    colab = True
-except ImportError:
-    colab = False
-
-def celsius_to_fahrenheit(celsius):
-    """Convierte temperatura de Celsius a Fahrenheit"""
-    return (celsius * 9/5) + 32
-
 def transform_data(url):
     print(" Descargando datos desde la URL...")
     try:
@@ -34,8 +16,13 @@ def transform_data(url):
         return None
 
     print(" Datos descargados correctamente.")
+
+    # Mostrar todas las columnas y filas al imprimir el DataFrame
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+
     print("\n Vista previa de los datos originales:")
-    print(df.head())
+    print(df)
 
     # Transformación
     print("\n Transformando datos...")
@@ -51,6 +38,9 @@ def transform_data(url):
                 print(f" Error al convertir {col}: {e}")
         else:
             print(f" Columna {col} no encontrada")
+
+    print("\n Datos transformados:")
+    print(df)
 
     output_file = "temperaturas_transformadas.csv"
     df.to_csv(output_file, index=False, sep=',', encoding='utf-8')
